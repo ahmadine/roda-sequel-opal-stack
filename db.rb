@@ -1,3 +1,6 @@
+require 'bundler'
+Bundler.setup(:default, (ENV['RACK_ENV'] || :development).to_sym)
+
 begin
   require_relative '.env.rb'
 rescue LoadError

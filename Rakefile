@@ -52,10 +52,10 @@ irb = proc do |env|
   ENV['RACK_ENV'] = env
   trap('INT', "IGNORE")
   dir, base = File.split(FileUtils::RUBY)
-  cmd = if base.sub!(/\Aruby/, 'irb')
+  cmd = if base.sub!(/\Aruby/, 'pry')
     File.join(dir, base)
   else
-    "#{FileUtils::RUBY} -S irb"
+    "#{FileUtils::RUBY} -S pry"
   end
   sh "#{cmd} -r ./models"
 end
@@ -105,8 +105,20 @@ task "annotate" do
   Sequel::Annotate.annotate(Dir['models/*.rb'])
 end
 
+# Assets
+
+desc "Recompile assets"
+task "assets" do
+  ENV['RACK_ENV'] = 'production'
+  require_relative 'app'
+  App.compile_assets
+end
+
 last_line = __LINE__
 # Utils
+
+##### untested on this branch #####
+## but it can give you an idea how to create your own .env.rb
 
 desc "give the application an appropriate name"
 task :setup, [:name] do |t, args|
@@ -124,13 +136,16 @@ task :setup, [:name] do |t, args|
 case ENV['RACK_ENV'] ||= 'development'
 when 'test'
   ENV['#{upper_name}_SESSION_SECRET'] ||= #{random_bytes.call}.unpack('m')[0]
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_test?user=#{lower_name}"
+  #ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_test?user=#{lower_name}"
+  ENV['#{upper_name}_DATABASE_URL'] ||= "sqlite://.db.test.sqlite3"
 when 'production'
   ENV['#{upper_name}_SESSION_SECRET'] ||= #{random_bytes.call}.unpack('m')[0]
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_production?user=#{lower_name}"
+  #ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_production?user=#{lower_name}"
+  ENV['#{upper_name}_DATABASE_URL'] ||= "sqlite://.db.prod.sqlite3"
 else
   ENV['#{upper_name}_SESSION_SECRET'] ||= #{random_bytes.call}.unpack('m')[0]
-  ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_development?user=#{lower_name}"
+  #ENV['#{upper_name}_DATABASE_URL'] ||= "postgres:///#{lower_name}_development?user=#{lower_name}"
+  ENV['#{upper_name}_DATABASE_URL'] ||= "sqlite://.db.dev.sqlite3"
 end
 END
 

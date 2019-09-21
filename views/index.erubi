@@ -1,0 +1,10 @@
+<h1>Hello World!</h1>
+<ul id='foo'>
+</ul>
+
+<button id='butt1'>Animate</button>
+<button id='butt2'>Animate</button>
+
+<div id='xdiv' style='height: 300px; width: 300px; background-color: red'></div>
+
+<%== trigger_js :load_index %>

@@ -1,0 +1,11 @@
+<p>Example!
+
+<p>This is just an Example!
+
+<div id='examples'>
+  <% @examples.each do |i| %>
+    <%== render "part-example", scope: i %>
+  <% end %>
+</div>
+
+<%== trigger_js :load_example %>

@@ -1,4 +1,4 @@
-dev = ENV['RACK_ENV'] == 'development'
+dev = (ENV['RACK_ENV'] ||= 'development') == 'development'
 
 if dev
   require 'logger'
@@ -11,12 +11,12 @@ require_relative 'models'
 Unreloader.require('app.rb'){'App'}
 run(dev ? Unreloader : App.freeze.app)
 
-unless dev
-  begin
-    require 'refrigerator'
-  rescue LoadError
-  else
-    require 'tilt/sass' unless File.exist?(File.expand_path('../compiled_assets.json', __FILE__))
-    Refrigerator.freeze_core
-  end
-end
+#unless dev
+#  begin
+#    require 'refrigerator'
+#  rescue LoadError
+#  else
+#    require 'tilt/sass' unless File.exist?(File.expand_path('../compiled_assets.json', __FILE__))
+#    Refrigerator.freeze_core
+#  end
+#end
