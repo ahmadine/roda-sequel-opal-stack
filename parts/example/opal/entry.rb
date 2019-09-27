@@ -6,6 +6,7 @@ end
 
 $window.on :load_example do
   examples = $document['examples']
+
   examples.on :mouseover, '.part-example' do |e|
     e.on.animate "background-color" => "red"
   end

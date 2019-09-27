@@ -10,6 +10,7 @@ gem 'sequel', '>= 5'
 gem 'sqlite3'
 gem 'rack-unreloader'
 
+### Make sure to adjust locations of those gems
 gem 'opal', path: '../opal'
 gem 'opal-browser', path: '../opal-browser'
 gem 'opal-erubi', path: '../opal-erubi'

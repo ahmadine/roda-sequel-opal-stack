@@ -54,12 +54,16 @@ class App < Roda
                   timestamp_paths: true,
                   css_compressor: :yui, js_compressor: :uglifier,
                   gzip: true, precompiled: prod? ? 'public/assets/assets-precompiled.json' : nil,
-                  dependencies: dev? ? {'opal/entry-corelib.rb' => Dir['../opal/**'],
-                                        'opal/entry-devel.rb'   => Dir['../opal/**'],
-                                        'opal/entry-browser.rb' => Dir['../opal-browser/**'],
-                                        'opal/entry-app.rb'     => Dir['opal/**'] + Dir['common/**'] } : {}
+                  dependencies: dev? ? {__dir__+'/opal/entry-corelib.rb' => Dir['../opal/**'],
+                                        __dir__+'/opal/entry-devel.rb'   => Dir['../opal/**'],
+                                        __dir__+'/opal/entry-browser.rb' => Dir['../opal-browser/**'],
+                                        __dir__+'/opal/entry-app.rb'     => Dir['opal/**'] + Dir['common/**'],
+                                       }.merge(Dir[__dir__+'/parts/**/opal/entry.rb'].map do |i|
+                                          dir = File.dirname(File.dirname(i))
+                                          [i, Dir[dir+'/views/**'] + Dir[dir+'/opal/**'] + Dir[dir+'/common/**']]
+                                         end.to_h) : {}
   plugin :render, escape: true, engine: "erubi", layout: "./layout",
-                  allowed_paths: ['common', 'views', *Dir['parts/**/common'], *Dir['parts/**/views']]
+                  allowed_paths: ['views', *Dir['parts/**/views']]
   plugin :view_options
   plugin :public
   plugin :multi_route
